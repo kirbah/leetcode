@@ -18,20 +18,18 @@ class WordDictionary:
 
     def addWord(self, word: str) -> None:
         node = self.root
-        node.word_max_length = max(node.word_max_length, len(word))
 
         for c in word:
             index = ord(c) - ord('a')
             if not node.children[index]:
                 node.children[index] = Node()
             node = node.children[index]
-            node.word_max_length = max(node.word_max_length, len(word))
 
         node.is_word_end = True
         self.root.word_max_length = max(self.root.word_max_length, len(word))
 
     def search(self, word: str) -> bool:
-        node_length = self.root if word[0] == '.' else self.root.children[ord(word[0]) - ord('a')]
+        node_length = self.root
         if not node_length or node_length.word_max_length < len(word):
             return False
 
@@ -47,7 +45,7 @@ class WordDictionary:
             # Process all possible chars when there is '.' in the word
             for i in range(26):
                 next_node = node.children[i]
-                if next_node and next_node.word_max_length >= len(word) and dfs(word, position + 1, next_node):
+                if next_node and dfs(word, position + 1, next_node):
                     return True
 
             return False
