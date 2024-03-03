@@ -10,6 +10,23 @@ from typing import List
 
 class Solution:
     def maxProduct(self, nums: List[int]) -> int:
+        res = nums[0]
+        left = right = 1
+        n = len(nums)
+
+        for i in range(n):
+            left = nums[i] * left
+            right = nums[n - i - 1] * right
+            res = max(res, left, right)
+
+            # in case of 0 need to reset to 1 to proceed with the rest of numbers
+            left = left or 1
+            right = right or 1
+
+        return res
+
+
+    def maxProduct_v2(self, nums: List[int]) -> int:
         res = min_val = max_val = nums[0]
 
         for num in nums[1:]:
