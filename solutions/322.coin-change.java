@@ -38,30 +38,28 @@ class Solution {
         return dp[amount] == amount + 1 ? -1 : dp[amount];
     }
 
-    // Too slow to pass test :(
-    public int coinChange_rec(int[] coins, int amount) {
+    public int coinChange_v3(int[] coins, int amount) {
         int[] dp = new int[amount + 1];
-        Arrays.fill(dp, Integer.MAX_VALUE);
+        Arrays.fill(dp, 1, dp.length, amount + 1);  // Init. Keep 0 as first value and above max for rest
         boolean[] dpCounted = new boolean[amount + 1];
-        return change(dp, dpCounted, coins, amount);
+        dpCounted[0] = true;       // First result is pre-counted
+
+        int res = change(dp, dpCounted, coins, amount);
+        return res == amount + 1 ? -1 : res;
     }
 
-    private int change(int[] dp, boolean[] dpCounted, int[] coins, int left) {
-        if (left == 0) return 0;
-        if (left < 0) return -1;
-        if (dpCounted[left]) return dp[left];
+    private int change(int[] dp, boolean[] dpCounted, int[] coins, int amount) {
+        if (dpCounted[amount]) return dp[amount];
 
         for(int coin : coins) {
-            if (left - coin >= 0) {
-                int subproblem = change(dp, dpCounted, coins, left - coin);
-                if (subproblem >= 0) {
-                    dp[left] = Math.min(subproblem + 1, dp[left]);
-                    dpCounted[left] = true;
-                }
+            if (amount - coin >= 0) {
+                int subproblem = change(dp, dpCounted, coins, amount - coin);
+                dp[amount] = Math.min(subproblem + 1, dp[amount]);
             }
         }
+        dpCounted[amount] = true;
 
-        return dpCounted[left] ? dp[left] : -1;
+        return dp[amount];
     }
 }
 // @lc code=end
